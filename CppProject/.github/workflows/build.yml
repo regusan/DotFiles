@@ -1,0 +1,50 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: build-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  cpp:
+    name: C++
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup development environment
+        run: bash scripts/setup-ubuntu.sh
+
+      - name: Configure Debug
+        run: cmake --preset debug
+
+      - name: Check format
+        run: cmake --build --preset debug --target format-check
+
+      - name: Build Debug
+        run: cmake --build --preset debug --parallel
+
+      - name: Test Debug
+        run: ctest --preset debug
+
+      - name: Configure clang-tidy
+        run: cmake --preset lint
+
+      - name: Run clang-tidy
+        run: cmake --build --preset lint --parallel
+
+      - name: Configure Release
+        run: cmake --preset release
+
+      - name: Build Release
+        run: cmake --build --preset release --parallel
