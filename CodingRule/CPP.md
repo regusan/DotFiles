@@ -6,6 +6,7 @@
 * 書式は Google C++ Style をベースとする
 * 設計上の判断は C++ Core Guidelines を参考にする
 * 書式や命名は文章で細かく規定しすぎず、`.clang-format` / `.clang-tidy` を正とする
+* 共通のClang / CMake開発設定は `CppProject/` を原本とし、各プロジェクト固有の要件に応じて調整する
 
 ## 言語
 
